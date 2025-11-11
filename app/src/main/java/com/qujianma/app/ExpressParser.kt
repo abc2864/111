@@ -112,8 +112,8 @@ class ExpressParser {
                 return tuXiLifeParsed
             }
             
-            // 最后使用内置提取器解析
-            return parseWithExtractor(processedContent, timestamp)
+            // 最后使用新的通用提取器解析
+            return parseWithNewUniversalExtractor(processedContent, timestamp)
         }
         
         /**
@@ -121,7 +121,7 @@ class ExpressParser {
          */
         fun parse(smsContent: String, timestamp: Long): ExpressInfo? {
             // 直接使用新的提取器解析，不使用自定义规则
-            return parseWithExtractor(smsContent, timestamp)
+            return parseWithNewUniversalExtractor(smsContent, timestamp)
         }
         
         /**
@@ -814,6 +814,37 @@ class ExpressParser {
         }
         
         /**
+         * 使用新的通用提取器解析短信
+         */
+        private fun parseWithNewUniversalExtractor(smsContent: String, timestamp: Long): ExpressInfo? {
+            val extractedInfo = NewUniversalExpressParser.parse(smsContent)
+            
+            val pickupCode = extractedInfo["code"] as? String
+            val stationName = extractedInfo["station"] as? String
+            val address = extractedInfo["address"] as? String
+            
+            // 必须至少提取到一个有效的取件码
+            if (pickupCode == null) {
+                return null
+            }
+            
+            // 验证取件码有效性
+            if (!isValidPickupCode(pickupCode, smsContent)) {
+                return null
+            }
+            
+            return ExpressInfo(
+                id = ExpressInfo.generateStableId(pickupCode, stationName ?: "未知驿站", address ?: "地址未知", timestamp),
+                pickupCode = pickupCode,
+                pickupCodes = listOf(pickupCode),
+                stationName = stationName ?: "未知驿站",
+                address = address ?: "地址未知",
+                smsContent = smsContent,
+                timestamp = timestamp
+            )
+        }
+        
+        /**
          * 使用自定义规则解析短信
          */
         private fun parseWithCustomRules(smsContent: String, timestamp: Long, rules: List<Rule>): ExpressInfo? {
@@ -930,28 +961,7 @@ class ExpressParser {
                         }
                     }
 
-                    // 如果找到了取件码，则验证取件码是否为非文本
-                    if (pickupCode != null && isValidPickupCode(pickupCode, smsContent)) {
-                        // 特殊处理：如果驿站名称包含多个【】，则只提取第一个【】中的内容
-                        if (stationName != null && smsContent.contains("【") && smsContent.contains("】")) {
-                            // 查找第一个【】中的内容
-                            val firstTagPattern = Regex("【([^】]+)】")
-                            val firstTagMatch = firstTagPattern.find(smsContent)
-                            if (firstTagMatch != null) {
-                                stationName = firstTagMatch.groupValues[1].trim()
-                            }
-                        }
-                        
-                        return ExpressInfo(
-                            id = ExpressInfo.generateStableId(pickupCode, stationName ?: "未知驿站", address ?: "地址未知", timestamp),
-                            pickupCode = pickupCode,
-                            pickupCodes = listOf(pickupCode), // 自定义规则仍只支持单个取件码
-                            stationName = stationName ?: "未知驿站",
-                            address = address ?: "地址未知",
-                            smsContent = smsContent,
-                            timestamp = timestamp
-                        )
-                    }
+
                 } catch (e: Exception) {
                     // 忽略单个规则的解析错误，继续尝试其他规则
                     e.printStackTrace()
