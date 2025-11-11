@@ -1,0 +1,115 @@
+/* 移动端优化样式 */
+
+/* 导航栏在小屏幕上折叠 */
+@media (max-width: 768px) {
+  .navbar-nav {
+    flex-direction: column !important;
+  }
+  
+  .navbar-nav .nav-link {
+    padding: 0.5rem 1rem;
+  }
+  
+  .navbar-brand {
+    font-size: 1.1rem;
+  }
+  
+  .navbar-text {
+    font-size: 0.9rem;
+    margin-right: 0.5rem !important;
+  }
+  
+  /* 卡片布局调整 */
+  .col-md-6 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  
+  /* 表格响应式处理 */
+  .table-responsive {
+    font-size: 0.8rem;
+  }
+  
+  .table th, .table td {
+    padding: 0.5rem;
+  }
+  
+  /* 表单元素调整 */
+  .form-control, .form-select {
+    font-size: 1rem;
+    padding: 0.5rem;
+  }
+  
+  .btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+  }
+  
+  /* 卡片间距调整 */
+  .card {
+    margin-bottom: 1rem;
+  }
+  
+  .card-body {
+    padding: 1rem;
+  }
+  
+  /* 标题大小调整 */
+  h2 {
+    font-size: 1.5rem;
+  }
+  
+  h5 {
+    font-size: 1.1rem;
+  }
+  
+  /* 警告框内边距调整 */
+  .alert {
+    padding: 0.75rem 1rem;
+  }
+  
+  /* 按钮组在小屏幕上垂直排列 */
+  .btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .btn-group .btn {
+    width: 100%;
+    margin-bottom: 0.25rem;
+  }
+  
+  /* 表格中的操作列调整 */
+  .table td:last-child {
+    min-width: 100px;
+  }
+  
+  /* 减少内边距和外边距 */
+  .container {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  
+  .mt-4 {
+    margin-top: 1rem !important;
+  }
+  
+  .mb-4 {
+    margin-bottom: 1rem !important;
+  }
+  
+  .mb-3 {
+    margin-bottom: 0.75rem !important;
+  }
+  
+  /* 表单标签字体大小 */
+  .form-label {
+    font-size: 0.9rem;
+  }
+  
+  /* 调整表格内容最大宽度 */
+  .rule-content {
+    max-width: 150px;
+  }
+}
