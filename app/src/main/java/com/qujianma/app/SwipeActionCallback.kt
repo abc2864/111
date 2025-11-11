@@ -118,7 +118,7 @@ abstract class SwipeActionCallback : ItemTouchHelper.SimpleCallback(0, ItemTouch
     }
     
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        val position = viewHolder.adapterPosition
+        val position = viewHolder.bindingAdapterPosition
         when (direction) {
             ItemTouchHelper.LEFT -> {
                 // Handle left swipe

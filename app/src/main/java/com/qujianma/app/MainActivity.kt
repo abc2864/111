@@ -1117,7 +1117,12 @@ class MainActivity : AppCompatActivity() {
         
         // 获取应用版本信息
         try {
-            val packageInfo = packageManager.getPackageInfo(packageName, android.content.pm.PackageManager.PackageInfoFlags.of(0))
+            val packageInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                packageManager.getPackageInfo(packageName, android.content.pm.PackageManager.PackageInfoFlags.of(0))
+            } else {
+                @Suppress("DEPRECATION")
+                packageManager.getPackageInfo(packageName, 0)
+            }
             versionText.text = "版本号: ${packageInfo.versionName}"
         } catch (e: Exception) {
             versionText.text = "版本号: 未知"

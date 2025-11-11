@@ -79,7 +79,13 @@ class SmsReceiver : BroadcastReceiver() {
         if (intent.action == "android.provider.Telephony.SMS_RECEIVED") {
             val bundle: Bundle? = intent.extras
             if (bundle != null) {
-                val pdus = bundle.getParcelableArray("pdus")
+                val pdus = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    @Suppress("DEPRECATION")
+                    bundle.getParcelableArray("pdus", ByteArray::class.java)
+                } else {
+                    @Suppress("DEPRECATION")
+                    bundle.getParcelableArray("pdus")
+                }
                 val format = bundle.getString("format")
                 val messages = arrayOfNulls<SmsMessage>(pdus?.size ?: 0)
                 
